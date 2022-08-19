@@ -15,6 +15,7 @@ public class RegistrationFormPage {
     private CalendarComponent calendarComponent = new CalendarComponent();
     private ResultsModal resultsModal = new ResultsModal();
     private FileUpload fileUpload = new FileUpload();
+
     private SelenideElement
             firstNameInput = $("#firstName"),
             lastNameInput = $("#lastName"),

@@ -1,48 +1,60 @@
 package com.demoqa.tests;
 
-import com.codeborne.selenide.Configuration;
+import com.github.javafaker.Faker;
 import com.demoqa.pages.RegistrationFormPage;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class AutomationPracticeFormTest {
-    RegistrationFormPage registrationFormPage = new RegistrationFormPage();
+import java.util.Locale;
 
-    @BeforeAll
-    static void configure() {
-        Configuration.baseUrl = "https://demoqa.com";
-        Configuration.browserSize = "400x1028";
-    }
+import static java.lang.String.format;
+
+public class AutomationPracticeFormTest extends TestBase {
+    RegistrationFormPage registrationFormPage = new RegistrationFormPage();
+    Faker faker = new Faker(new Locale("en"));
+
+    String firstName = faker.name().firstName(),
+            lastName = faker.name().lastName(),
+            userEmail = faker.internet().emailAddress(),
+            gender = "Female",
+            userNumber = faker.phoneNumber().subscriberNumber(10),
+            day = faker.number().numberBetween(1, 30) + "",
+            month = "May",
+            year = faker.number().numberBetween(1940, 2010) + "",
+            userSubjects = "Chemistry",
+            userHobbies = "Music",
+            fileName = "1.png",
+            userAddress = faker.address().cityName(),
+            userState = "NCR",
+            userCity = "Noida";
 
     @Test
     void fillPracticeFormTest() {
         registrationFormPage.openPage()
-                .setFirstName("Xenia")
-                .setLastName("Iva")
-                .setEmail("xiva@gmail.com")
-                .setGender("Female")
-                .setNumber("1234567890")
-                .setBirthDate("15", "May", "1999")
-                .setSubjects("Chemistry")
-                .setHobbies("Sports")
-                .setHobbies("Reading")
-                .uploadFile("1.png")
-                .setAddress("Moscow")
-                .setState("NCR")
-                .setCity("Noida")
+                .setFirstName(firstName)
+                .setLastName(lastName)
+                .setEmail(userEmail)
+                .setGender(gender)
+                .setNumber(userNumber)
+                .setBirthDate(day, month, year)
+                .setSubjects(userSubjects)
+                .setHobbies(userHobbies)
+                .uploadFile(fileName)
+                .setAddress(userAddress)
+                .setState(userState)
+                .setCity(userCity)
                 .submit();
 
         registrationFormPage.checkResultsTableVisible()
-                .checkResult("Student Name", "Xenia Iva")
-                .checkResult("Student Email", "xiva@gmail.com")
-                .checkResult("Gender","Female")
-                .checkResult("Mobile","1234567890")
-                .checkResult("Date of Birth", "15 May,1999")
-                .checkResult("Subjects","Chemistry")
-                .checkResult("Hobbies","Sports, Reading")
-                .checkResult("Picture","1.png")
-                .checkResult("Address","Moscow")
-                .checkResult("State and City","NCR Noida");
+                .checkResult("Student Name", format("%s %s", firstName, lastName))
+                .checkResult("Student Email", userEmail)
+                .checkResult("Gender", gender)
+                .checkResult("Mobile", userNumber)
+                .checkResult("Date of Birth", format("%s %s,%s", day, month, year))
+                .checkResult("Subjects", userSubjects)
+                .checkResult("Hobbies", userHobbies)
+                .checkResult("Picture", fileName)
+                .checkResult("Address", userAddress)
+                .checkResult("State and City", format("%s %s", userState, userCity));
     }
 }
 
